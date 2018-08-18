@@ -17,13 +17,16 @@ int map_setup();
 int main(int argc, char *argv[])
 {
         player* user;
-
+        int ch;
         screen_setup();
         map_setup();
 
         user = player_setup();
 
-        getch();
+        while ((ch = getch()) != 'q') {
+                
+        }
+
         endwin();
         return 0;
 }
