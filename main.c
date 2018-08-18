@@ -1,21 +1,34 @@
 #include <ncurses.h>
+#include <stdlib.h>
 
-int screenSetUp();
-int mapSetUp();
+struct player_t
+{
+        int x_pos;
+        int y_pos;
+        int health;
+};
+typedef struct player_t player;
+
+player* player_setup();
+
+int screen_setup();
+int map_setup();
 
 int main(int argc, char *argv[])
 {
-        screenSetUp();
+        player* user;
 
-        mapSetUp();
-        
+        screen_setup();
+        map_setup();
+
+        user = player_setup();
+
         getch();
         endwin();
-        
         return 0;
 }
 
-int screenSetUp()
+int screen_setup()
 {
         initscr();
         printw("Hello, world!");
@@ -24,7 +37,7 @@ int screenSetUp()
         return 0;
 }
 
-int mapSetUp()
+int map_setup()
 {
         mvprintw(13,13, "--------");
         mvprintw(14,13, "|......|");
@@ -46,4 +59,18 @@ int mapSetUp()
         mvprintw(15,40, "|.........|");
         mvprintw(16,40, "|.........|");
         mvprintw(17,40, "-----------");
+}
+
+player* player_setup()
+{
+        player* new_player;
+        new_player = malloc(sizeof(player));
+
+        new_player->x_pos = 14;
+        new_player->y_pos = 14;
+        new_player->health = 20;
+
+        mvprintw(new_player->y_pos, new_player->x_pos, "@");
+        move(new_player->y_pos, new_player->x_pos);
+        return new_player;
 }
