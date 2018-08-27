@@ -13,6 +13,8 @@ player* player_setup();
 
 int screen_setup();
 int map_setup();
+int handle_input(int input, player* user);
+int player_move(int y, int x, player* user);
 
 int main(int argc, char *argv[])
 {
@@ -23,8 +25,9 @@ int main(int argc, char *argv[])
 
         user = player_setup();
 
+        /* main game loop */
         while ((ch = getch()) != 'q') {
-                
+                handle_input(ch, user);
         }
 
         endwin();
@@ -73,7 +76,36 @@ player* player_setup()
         new_player->y_pos = 14;
         new_player->health = 20;
 
-        mvprintw(new_player->y_pos, new_player->x_pos, "@");
-        move(new_player->y_pos, new_player->x_pos);
+        player_move(14, 14, new_player);
+
         return new_player;
+}
+
+int handle_input(int input, player* user)
+{
+        switch (input) {
+        case 'k':               /* move up */
+                player_move(user->y_pos - 1, user->x_pos, user);
+                break;
+        case 'j':               /* move down */
+                player_move(user->y_pos + 1, user->x_pos, user);
+                break;
+        case 'h':               /* move left */
+                player_move(user->y_pos, user->x_pos - 1, user);
+                break;
+        case 'l':               /* move right */
+                player_move(user->y_pos, user->x_pos + 1, user);
+                break;
+        default:
+                break;
+        }
+}
+
+int player_move(int y, int x, player* user)
+{
+        mvprintw(user->y_pos, user->x_pos, ".");
+        user->x_pos = x;
+        user->y_pos = y;
+        mvprintw(user->y_pos, user->x_pos, "@");
+        move(user->y_pos, user->x_pos);
 }
