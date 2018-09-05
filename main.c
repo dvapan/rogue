@@ -15,6 +15,7 @@ int screen_setup();
 int map_setup();
 int handle_input(int input, player* user);
 int player_move(int y, int x, player* user);
+int check_position(int new_y, int new_x, player* user);
 
 int main(int argc, char *argv[])
 {
@@ -83,20 +84,41 @@ player* player_setup()
 
 int handle_input(int input, player* user)
 {
+        int new_y, new_x;
         switch (input) {
         case 'k':               /* move up */
-                player_move(user->y_pos - 1, user->x_pos, user);
+                new_y = user->y_pos - 1;
+                new_x = user->x_pos;
                 break;
         case 'j':               /* move down */
-                player_move(user->y_pos + 1, user->x_pos, user);
+                new_y = user->y_pos + 1;
+                new_x = user->x_pos;
                 break;
         case 'h':               /* move left */
-                player_move(user->y_pos, user->x_pos - 1, user);
+                new_y = user->y_pos;
+                new_x = user->x_pos - 1;
                 break;
         case 'l':               /* move right */
-                player_move(user->y_pos, user->x_pos + 1, user);
+                new_y = user->y_pos;
+                new_x = user->x_pos + 1;
                 break;
         default:
+                break;
+        }
+        check_position(new_y, new_x, user);
+}
+
+/* check what is at next position */
+int check_position(int y, int x, player* user)
+{
+        int space;
+        switch (mvinch(y,x)) {
+        case '.': {
+                player_move(y, x, user);
+                break;
+        }
+        default:
+                player_move(user->y_pos, user->x_pos, user);
                 break;
         }
 }
