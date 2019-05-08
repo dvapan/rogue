@@ -1,10 +1,16 @@
 #include <ncurses.h>
 #include <stdlib.h>
 
+struct position_t{
+        int x;
+        int y;
+        /* TILE_TYPE tile; */
+};
+typedef struct position_t position;
+
 struct room_t
 {
-        int x_pos;
-        int y_pos;
+        position pos;
         int height;
         int width;
         /* monster ** monsters; */
@@ -14,8 +20,7 @@ typedef struct room_t room;
 
 struct player_t
 {
-        int x_pos;
-        int y_pos;
+        position pos;
         int health;
         /* room* room; */
 };
@@ -102,8 +107,8 @@ room* create_room(int x, int y, int height, int width)
         room* new_room;
         new_room = malloc(sizeof(room));
 
-        new_room->x_pos = x;
-        new_room->y_pos = y;
+        new_room->pos.x = x;
+        new_room->pos.y = y;
         new_room->height = height;
         new_room->width = width;
 
@@ -115,18 +120,18 @@ int draw_room(room* room)
         int x,y;
 
         /* draw top and bottom */
-        for(x = room->x_pos; x < room->x_pos + room->width; x++){
-                mvprintw(room->y_pos, x, "-"); /* top */
-                mvprintw(room->y_pos + room->height - 1, x, "-"); /* bottom */
+        for(x = room->pos.x; x < room->pos.x+ room->width; x++){
+                mvprintw(room->pos.y, x, "-"); /* top */
+                mvprintw(room->pos.y + room->height - 1, x, "-"); /* bottom */
         }
         /* draw floors and side walls */
-        for (y = room->y_pos + 1; y < room->y_pos + room->height - 1; y++)
+        for (y = room->pos.y + 1; y < room->pos.y + room->height - 1; y++)
         {
                 /* draw side walls */
-                mvprintw(y, room->x_pos, "|");
-                mvprintw(y, room->x_pos + room->width - 1, "|");
+                mvprintw(y, room->pos.x, "|");
+                mvprintw(y, room->pos.x + room->width - 1, "|");
                 /* draw floors */
-                for (x = room->x_pos + 1; x < room->x_pos + room->width - 1; x++)
+                for (x = room->pos.x + 1; x < room->pos.x + room->width - 1; x++)
                 {
                         mvprintw(y,x,".");
                 }
@@ -139,8 +144,8 @@ player* player_setup()
         player* new_player;
         new_player = malloc(sizeof(player));
 
-        new_player->x_pos = 14;
-        new_player->y_pos = 14;
+        new_player->pos.x = 14;
+        new_player->pos.y = 14;
         new_player->health = 20;
 
         player_move(14, 14, new_player);
@@ -153,20 +158,20 @@ int handle_input(int input, player* user)
         int new_y, new_x;
         switch (input) {
         case 'k':               /* move up */
-                new_y = user->y_pos - 1;
-                new_x = user->x_pos;
+                new_y = user->pos.y - 1;
+                new_x = user->pos.x;
                 break;
         case 'j':               /* move down */
-                new_y = user->y_pos + 1;
-                new_x = user->x_pos;
+                new_y = user->pos.y + 1;
+                new_x = user->pos.x;
                 break;
         case 'h':               /* move left */
-                new_y = user->y_pos;
-                new_x = user->x_pos - 1;
+                new_y = user->pos.y;
+                new_x = user->pos.x - 1;
                 break;
         case 'l':               /* move right */
-                new_y = user->y_pos;
-                new_x = user->x_pos + 1;
+                new_y = user->pos.y;
+                new_x = user->pos.x + 1;
                 break;
         default:
                 break;
@@ -184,16 +189,16 @@ int check_position(int y, int x, player* user)
                 break;
         }
         default:
-                player_move(user->y_pos, user->x_pos, user);
+                player_move(user->pos.y, user->pos.x, user);
                 break;
         }
 }
 
 int player_move(int y, int x, player* user)
 {
-        mvprintw(user->y_pos, user->x_pos, ".");
-        user->x_pos = x;
-        user->y_pos = y;
-        mvprintw(user->y_pos, user->x_pos, "@");
-        move(user->y_pos, user->x_pos);
+        mvprintw(user->pos.y, user->pos.x, ".");
+        user->pos.x = x;
+        user->pos.y = y;
+        mvprintw(user->pos.y, user->pos.x, "@");
+        move(user->pos.y, user->pos.x);
 }
