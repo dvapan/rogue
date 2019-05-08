@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <stdlib.h>
+#include <time.h>
 
 struct position_t{
         int x;
@@ -13,6 +14,8 @@ struct room_t
         position pos;
         int height;
         int width;
+
+        position** doors;
         /* monster ** monsters; */
         /* item ** items; */
 };
@@ -42,6 +45,8 @@ int main(int argc, char *argv[])
 {
         player* user;
         int ch;
+        srand(time(NULL));
+
         screen_setup();
         map_setup();
 
@@ -112,6 +117,27 @@ room* create_room(int x, int y, int height, int width)
         new_room->height = height;
         new_room->width = width;
 
+        new_room->doors = malloc(sizeof(position) * 4);
+        
+        /* Top door */
+        new_room->doors[0] = malloc(sizeof(position));
+        new_room->doors[0]->x = rand() % (width - 2) + x + 1;
+        new_room->doors[0]->y = y;
+
+        /* bottom door */
+        new_room->doors[1] = malloc(sizeof(position));
+        new_room->doors[1]->x = rand() % (width - 2) + x + 1;
+        new_room->doors[1]->y = y + height - 1;
+
+        /* left door */
+        new_room->doors[2] = malloc(sizeof(position));
+        new_room->doors[2]->y = rand() % (height - 2) + y + 1;
+        new_room->doors[2]->x = x;
+
+        /* left door */
+        new_room->doors[3] = malloc(sizeof(position));
+        new_room->doors[3]->y = rand() % (height - 2) + y + 1;
+        new_room->doors[3]->x = x + width - 1;
         return new_room;
 }
 
@@ -120,7 +146,7 @@ int draw_room(room* room)
         int x,y;
 
         /* draw top and bottom */
-        for(x = room->pos.x; x < room->pos.x+ room->width; x++){
+        for(x = room->pos.x; x < room->pos.x+ room->width; x++){+
                 mvprintw(room->pos.y, x, "-"); /* top */
                 mvprintw(room->pos.y + room->height - 1, x, "-"); /* bottom */
         }
@@ -136,6 +162,10 @@ int draw_room(room* room)
                         mvprintw(y,x,".");
                 }
         }
+
+        /* draw doors */
+        for (int i = 0; i < 4; i++)
+                mvprintw(room->doors[i]->y, room->doors[i]->x,"+");
         return 1;
 }
 
