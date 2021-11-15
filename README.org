@@ -1,0 +1,13 @@
+#+TITLE: Readme
+
+* Recuirenments
+- ncurses
+
+* Compile comand
+#+begin_src sh
+gcc main.c -lncurses
+#+end_src
+
+* Control Player
+
+h,j,k,l - move player
