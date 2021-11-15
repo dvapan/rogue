@@ -1,6 +1,6 @@
-#+TITLE: Readme
+#+TITLE: Simple Rogue game in C
 
-* Recuirenments
+* Requirements
 - ncurses
 
 * Compile comand
