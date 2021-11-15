@@ -3,11 +3,11 @@
 * Requirements
 - ncurses
 
-* Compile comand
+* Compile command
 #+begin_src sh
 gcc main.c -lncurses
 #+end_src
 
-* Control Player
+* Control 
 
 h,j,k,l - move player
